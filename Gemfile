@@ -6,7 +6,7 @@ gem "puma", ">= 5.0"
 
 # Auth
 gem "bcrypt", "~> 3.1"
-gem "jwt", "~> 2.7"
+gem "jwt", "~> 3.2"
 
 # Redis for ActionCable + caching
 gem "redis", "~> 5.0"

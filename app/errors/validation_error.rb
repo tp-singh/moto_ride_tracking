@@ -1,5 +1,3 @@
-class AuthorizationError < StandardError; end
-class NotFoundError < StandardError; end
 class ValidationError < StandardError
   attr_reader :errors
 

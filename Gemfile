@@ -41,7 +41,7 @@ group :development, :test do
   gem "rspec-rails", "~> 6.1"
   gem "factory_bot_rails", "~> 6.4"
   gem "faker", "~> 3.0"
-  gem "shoulda-matchers", "~> 6.0"
+  gem "shoulda-matchers", "~> 8.0"
   gem "database_cleaner-active_record", "~> 2.1"
   gem "timecop", "~> 0.9"
   gem "webmock", "~> 3.0"

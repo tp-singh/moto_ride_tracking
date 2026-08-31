@@ -9,7 +9,7 @@ gem "bcrypt", "~> 3.1"
 gem "jwt", "~> 2.7"
 
 # Redis for ActionCable + caching
-gem "redis", "~> 5.0"
+gem "redis", "~> 6.0"
 gem "redis-namespace", "~> 1.11"
 gem "connection_pool", "~> 2.4"
 

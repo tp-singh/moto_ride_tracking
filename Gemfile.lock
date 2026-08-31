@@ -131,7 +131,7 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.21.2)
-    jwt (2.10.3)
+    jwt (3.2.0)
       base64
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
@@ -349,7 +349,7 @@ DEPENDENCIES
   dotenv-rails (~> 3.0)
   factory_bot_rails (~> 6.4)
   faker (~> 3.0)
-  jwt (~> 2.7)
+  jwt (~> 3.2)
   kaminari (~> 1.2)
   oj (~> 3.16)
   pg (~> 1.1)

@@ -1,6 +1,6 @@
 class RideChannel < ApplicationCable::Channel
   def subscribed
-    ride = Ride.find_by(id: params[:ride_id])
+    ride = Ride.includes(:leader).find_by(id: params[:ride_id])
 
     unless ride && authorized_member?(ride)
       reject

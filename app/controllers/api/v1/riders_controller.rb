@@ -6,7 +6,7 @@ module Api
       def index
         raise AuthenticationError, 'Not a member of this ride' unless member_of_ride?
 
-        memberships = @ride.ride_memberships.active_members.includes(:user, :vehicle)
+        memberships = @ride.ride_memberships.active_members.includes(:user)
         redis_locs  = REDIS.hgetall("ride:#{@ride.id}:locations")
                            .transform_values { |v| JSON.parse(v) rescue {} }
 
@@ -34,7 +34,10 @@ module Api
 
       def set_ride
         id = params[:ride_id]
-        @ride = Ride.find_by!(public_id: id) rescue Ride.find(id)
+        @ride = Rails.cache.fetch("ride_by_pub:#{id}", expires_in: 30.seconds) do
+          Ride.find_by!(public_id: id) rescue Ride.find(id)
+        end
+        raise NotFoundError unless @ride
       rescue ActiveRecord::RecordNotFound
         raise NotFoundError
       end

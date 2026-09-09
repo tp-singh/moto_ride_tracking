@@ -10,21 +10,17 @@ module Api
         active    = locations.where.not(rider_status: 'offline')
                              .where('recorded_at > ?', 10.minutes.ago)
 
-        speeds = active.where('speed > 0').pluck(:speed)
-        avg_speed_ms  = speeds.empty? ? nil : speeds.sum / speeds.size
+        avg_speed_ms  = active.where('speed > 0').average(:speed)&.to_f
         avg_speed_kmh = avg_speed_ms ? (avg_speed_ms * 3.6).round(1) : nil
-
-        elapsed_secs = @ride.started_at ? (Time.current - @ride.started_at).to_i : nil
 
         total_riders  = @ride.ride_memberships.active_members.count
         active_riders = active.count
 
         render json: {
-          ride_id:         @ride.id,
-          avg_speed_kmh:   avg_speed_kmh,
-          elapsed_seconds: elapsed_secs,
-          total_riders:    total_riders,
-          active_riders:   active_riders
+          ride_id:       @ride.id,
+          avg_speed_kmh: avg_speed_kmh,
+          total_riders:  total_riders,
+          active_riders: active_riders
         }
       end
 
@@ -32,7 +28,10 @@ module Api
 
       def set_ride
         id = params[:id]
-        @ride = Ride.find_by!(public_id: id) rescue Ride.find(id)
+        @ride = Rails.cache.fetch("ride_by_pub:#{id}", expires_in: 30.seconds) do
+          Ride.find_by!(public_id: id) rescue Ride.find(id)
+        end
+        raise NotFoundError unless @ride
       rescue ActiveRecord::RecordNotFound
         raise NotFoundError
       end

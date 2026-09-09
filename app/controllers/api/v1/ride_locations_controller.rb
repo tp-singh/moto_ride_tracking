@@ -6,15 +6,22 @@ module Api
       def create
         batch = params[:locations]
         if batch.present?
-          batch.each do |point|
+          updates = batch.filter_map do |point|
             Locations::IngestLocationService.call(
-              ride:    @ride,
-              user:    current_user,
-              payload: point.permit(:latitude, :longitude, :altitude, :speed,
-                                    :heading, :accuracy, :battery_level,
-                                    :rider_status, :gps_state, :network_state,
-                                    :recorded_at).to_h.symbolize_keys
+              ride:      @ride,
+              user:      current_user,
+              broadcast: false,
+              payload:   point.permit(:latitude, :longitude, :altitude, :speed,
+                                      :heading, :accuracy, :battery_level,
+                                      :rider_status, :gps_state, :network_state,
+                                      :recorded_at).to_h.symbolize_keys
             )
+          end
+          if updates.any?
+            ActionCable.server.broadcast("ride_#{@ride.id}", {
+              type:    'location_batch',
+              updates: updates,
+            })
           end
         else
           Locations::IngestLocationService.call(

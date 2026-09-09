@@ -10,7 +10,7 @@ module Locations
     PING_KEY = ->(ride_id, user_id) { "ride:#{ride_id}:rider:#{user_id}:ping" }
     PING_TTL = 30
 
-    def self.call(ride:, user:, payload:)
+    def self.call(ride:, user:, payload:, broadcast: true)
       return unless valid?(payload)
 
       recorded_at = parse_time(payload[:recorded_at])
@@ -52,7 +52,7 @@ module Locations
         end
       end
 
-      ActionCable.server.broadcast("ride_#{ride.id}", {
+      location_event = {
         type:         'location_updated',
         user_id:      user.id,
         latitude:     payload[:latitude].to_f,
@@ -64,7 +64,8 @@ module Locations
         battery:      battery,
         gps_state:    gps_state,
         recorded_at:  recorded_at.iso8601
-      })
+      }
+      ActionCable.server.broadcast("ride_#{ride.id}", location_event) if broadcast
 
       bucketed_at = recorded_at.change(sec: recorded_at.sec < 30 ? 0 : 30)
       bucket_key  = "track_bucket:#{ride.id}:#{user.id}:#{bucketed_at.to_i}"
@@ -81,6 +82,8 @@ module Locations
 
       throttle_key = "group_intel_throttle:#{ride.id}"
       GroupIntelligenceJob.perform_async(ride.id) if REDIS.set(throttle_key, 1, nx: true, ex: 3)
+
+      location_event
     end
 
     def self.valid?(payload)

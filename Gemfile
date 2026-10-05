@@ -17,7 +17,7 @@ gem "connection_pool", "~> 2.4"
 gem "sidekiq", "~> 7.0"
 
 # JSON
-gem "oj", "~> 3.16"
+gem "oj", "~> 3.17"
 gem "blueprinter", "~> 1.0"
 
 # Auth / rate limiting

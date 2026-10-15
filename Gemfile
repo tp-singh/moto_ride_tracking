@@ -11,7 +11,7 @@ gem "jwt", "~> 2.7"
 # Redis for ActionCable + caching
 gem "redis", "~> 5.0"
 gem "redis-namespace", "~> 1.11"
-gem "connection_pool", "~> 2.4"
+gem "connection_pool", "~> 3.0"
 
 # Sidekiq client-only (enqueue jobs to main API's Sidekiq)
 gem "sidekiq", "~> 7.0"

@@ -14,7 +14,7 @@ gem "redis-namespace", "~> 1.11"
 gem "connection_pool", "~> 2.4"
 
 # Sidekiq client-only (enqueue jobs to main API's Sidekiq)
-gem "sidekiq", "~> 7.0"
+gem "sidekiq", "~> 8.0"
 
 # JSON
 gem "oj", "~> 3.16"
